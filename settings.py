@@ -1,0 +1,23 @@
+settings={
+    "verbose":True,
+    "intra":{
+        "url":"https://haslevprivatskole.m.skoleintra.dk/",
+        "diary_url":"parent/{}/{}item/weeklyplansandhomework/diary/notes/{}",
+        "week_plan_url":"parent/{}/{}item/weeklyplansandhomework/item/class/{}-{}",
+        "log_off_url":"Account/LogOff",
+        "username":"petthe",
+        "password":"f4nd4ng0"
+    },
+    "children":{
+        "Oskar":{
+            "firstname":"Oskar",
+            "id":1322,
+            "diaryid":71
+        },
+        "Storm":{
+            "firstname":"Storm",
+            "id":1186,
+            "diaryid":65
+        }
+    }
+}
