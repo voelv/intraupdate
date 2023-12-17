@@ -1,10 +1,11 @@
 settings={
     "verbose":True,
     "intra":{
-        "url":"https://haslevprivatskole.m.skoleintra.dk/",
+        "url":"https://haslevprivatskole.m.skoleintra.dk",
+        "login_path":"/Account/IdpLogin",
         "diary_url":"parent/{}/{}item/weeklyplansandhomework/diary/notes/{}",
         "week_plan_url":"parent/{}/{}item/weeklyplansandhomework/item/class/{}-{}",
-        "log_off_url":"Account/LogOff",
+        "logout_path":"/Account/LogOff",
         "username":"petthe",
         "password":"f4nd4ng0"
     },

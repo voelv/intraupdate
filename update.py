@@ -1,61 +1,56 @@
-import mechanize
+import requests
+#from bs4 import BeautifulSoup
 from settings import settings
-from homework import get as get_homework
 import logging
-import sys
-from util import infomessage
 
 #Init logging
 time_format = "%Y-%m-%d %H:%M:%S"
 logging.basicConfig(level=logging.INFO,filename='intraupdate.log', encoding='utf-8',format=f'%(asctime)s - %(levelname)s - %(name)s - %(message)s', datefmt=time_format)
 
-# Create a Browser instance
-def get_browser():
-    br = mechanize.Browser()
-    br.set_handle_robots(False)
+url = settings["intra"]["url"]+settings["intra"]["login_path"]
 
-    br.addheaders = [
-        ('User-agent', 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'),
-        ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')]
-    return br
+# Create a session with custom headers to preserve cookies and set User-Agent
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3"}
+session = requests.Session()
+session.headers.update(headers)
 
-def login(br):
-    infomessage(logging,"Logging in")
-    # Load the login page 
-    br.open(settings["intra"]["url"])
+def login():
+    form_data = {}
+    form_data["UserName"] = settings["intra"]["username"]
+    form_data["Password"] = settings["intra"]["password"]
 
-    # Select the first form (login form)
-    br.select_form(nr=0)  
-    
-    # Fill out the form fields  
-    br["UserName"] = settings["intra"]["username"]
-    br["Password"] = settings["intra"]["password"]
-    
-    # Submit the form  
-    br.submit()  
+    session.post(url, data=form_data)
 
-    # After ending on 'javascript not supported form' submit again  
-    br.select_form(nr=0)  
-    br.submit()
-    infomessage(logging,"Login succesful")  
-
-def logout(br):
-    infomessage(logging,"Logging out")
-    br.open(settings["intra"]["url"]+settings["intra"]["log_off_url"])
-    infomessage(logging,"Logout successful")
-
-    infomessage(logging,"Closing browser")
-    br.close() 
-    infomessage(logging,"Browser closed successfully")
+def logout():
+    session.get(settings["intra"]["url"]+settings["intra"]["logout_path"])
+    session.close()
 
 if __name__ == "__main__":
-    
-    browser=get_browser()
-    login(browser)
-    print(get_homework(browser,"Storm"))
-    #update_homework(browser)
-    #update_weekplans(browser)
-    logout(browser)
-    infomessage(logging," -- :D Have a nice day :D -- ")
-    sys.exit()
+    login()
+    logout()
 
+# # Make a GET request to retrieve the form
+# response = session.get(url)
+# html_content = response.text
+
+# # Use BeautifulSoup to parse the HTML content
+# soup = BeautifulSoup(html_content, 'html.parser')
+
+# # Find the form on the page
+# form = soup.find('form')
+
+# # Extract form inputs, including hidden fields, and build data dictionary with desired values
+# form_data = {}
+# for input_tag in form.find_all('input'):
+#     input_name = input_tag.get('name')
+#     if input_name:
+#         if 'value' in input_tag.attrs:
+#             form_data[input_name] = input_tag['value']
+#         else:
+#             form_data[input_name] = 'your_value_here'
+
+# # Make a POST request with the form data
+# response = session.post(url, data=form_data)
+
+# # Process the response as needed
+# print(response.text)

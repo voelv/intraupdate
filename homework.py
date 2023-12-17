@@ -39,18 +39,23 @@ def get(browser, child_name :str):
                     cols = [ele.text.strip() for ele in cols]
                     home_work_subject_list_per_day.append(cols)
 
-            home_work_day["home_work"]=home_work_subject_list_per_day
+            home_work_day["home_work"]=home_work_subject_list_per_day/0
             home_work_list.append(home_work_day) 
 
         homework={"name":child_name, "homework":home_work_list}
+ 
 
-        infomessage(mod_logger,f"Homework for {child_name} retrieved")
 
-        return homework
-    
     except IndexError as ie:
         mod_logger.error(ie)
+        infomessage(mod_logger,f"An error occured ({ie.__cause__}) see log")
+        return None
 
     except Exception as e:
         mod_logger.exception(e)
-    
+        infomessage(mod_logger,f"An exception occured ({e.__cause__}) see log")
+        return None
+
+    else:              
+        infomessage(mod_logger,f"Homework for {child_name} retrieved") 
+        return homework

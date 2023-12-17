@@ -1,9 +1,11 @@
 from settings import settings
 import logging
+from util import infomessage
 from bs4 import BeautifulSoup
 from datetime import date
-from util import fam_msg, is_after_now, intra_weekplan_date_is_today
-from db import save_weekplan, get_latest
+
+#from util import fam_msg, is_after_now, intra_weekplan_date_is_today
+#from db import save_weekplan, get_latest
 
 mod_logger = logging.getLogger(__name__)
 
@@ -16,7 +18,7 @@ def week_to_fetch(wk=None):
     return week
 
 def get_weekplan(browser, child_name :str, week_num=None, year=None):
-    mod_logger.info(f"Getting weekplan for {child_name}")
+    infomessage(mod_logger,f"Getting weekplan for {child_name}")
     child=settings["children"][child_name]
 
     # determine which weeknum to fetch
@@ -27,19 +29,18 @@ def get_weekplan(browser, child_name :str, week_num=None, year=None):
 
     week_plan_url=settings["intra"]["url"]+settings["intra"]["week_plan_url"].format(child["id"],child["firstname"],week_,year_)
 
-    browser.get(week_plan_url)
-
     try:
-        # Check the page is loading
-        element = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "sk-weekly-plan-row")))
-        content = browser.page_source
+        response = browser.open(week_plan_url)
+        content = response.read()
         soup = BeautifulSoup(content, 'html.parser')
-
         weekplan=[]
         
+
         # Get all rows
         # 1. row is general
+   
         plan_rows=soup.find_all("div", class_="sk-weekly-plan-row")
+
         
         for day in plan_rows:
             day_name=day.find("span", class_="sk-weekly-plan-day").contents[0]
@@ -65,67 +66,61 @@ def get_weekplan(browser, child_name :str, week_num=None, year=None):
 
             weekplan.append(dayplan)
 
-        w={"name":child_name, "weekplan":weekplan}
-
-        return w
+        w={"name":child_name, "weekplan":weekplan}       
     
     except IndexError as ie:
         mod_logger.error(ie)
-    except TimeoutException as te:
-        mod_logger.exception(te)
+        infomessage(mod_logger,f"An error occured see log")
+        return None
+
     except Exception as e:
         mod_logger.exception(e)
+        infomessage(mod_logger,f"An exception occured see log")
+        return None
+    else:
+        return w
     
 
-def print_weekplan(weekplan :list, later=True):
-    for day in weekplan:
-        strdate= day["date"] or ""
-        if strdate:
-            if is_after_now(strdate):
-                print(f"{day['name']} {strdate}")
-                for key,value in day["plan"].items():
-                    print(key,"\n",value)
-
-
-def get_intra_weekplan_list(browser, children :list):
+def get_weekplans(browser, children :list):
     """Returns a list of homework for each child suplied in the 'children' list"""
     num_c=len(children)
    # logging.info("Getting {} children".format(num_c))
-    weekplan=[]
+    weekplans=[]
 
     try:
         for i,child in enumerate(children):
-            fam_msg("Getting plan {} of {}".format(i+1,num_c), mod_logger)
+            infomessage(mod_logger,"Getting plan {} of {}".format(i+1,num_c))
             s=get_weekplan(browser, child)
-            weekplan.append(s)
+            weekplans.append(s)
     except Exception as e:
         mod_logger.exception(e)
+        return None
     else:
-        fam_msg("Succesfully retrieved {} plans".format(num_c), mod_logger)
-        return weekplan
+        infomessage(mod_logger,"Succesfully retrieved {} plans".format(num_c))
+        return weekplans
 
 
-def update(browser):
-    wp=get_intra_weekplan_list(browser,settings["update"]["children"])
-    save_weekplan(wp)
+# def update(browser):
+#     wp=get_weekplans(browser,settings["update"]["children"])
+#     save_weekplan(wp)
 
 
-def today(weekplans :list)->list:
-    """Takes a list of weekplans and filters them to return only the plan for today"""
-    for plan in weekplans:
-        plan["weekplan"] = [ele for ele in plan["weekplan"] if ele["date"] and intra_weekplan_date_is_today(ele["date"])]
+# def today(weekplans :list)->list:
+#     """Takes a list of weekplans and filters them to return only the plan for today"""
+#     for plan in weekplans:
+#         plan["weekplan"] = [ele for ele in plan["weekplan"] if ele["date"] and intra_weekplan_date_is_today(ele["date"])]
 
-    return weekplans
+#     return weekplans
 
-def load(today_=False):
-    try:
-        wp=get_latest("weekplan", settings["dash"]["homework"])
-    except Exception as ex:
-        fam_msg(ex,mod_logger)
+# def load(today_=False):
+#     try:
+#         wp=get_latest("weekplan", settings["dash"]["homework"])
+#     except Exception as ex:
+#         fam_msg(ex,mod_logger)
 
-    if today_:
-        return today(wp)
-    else:
-        return wp
+#     if today_:
+#         return today(wp)
+#     else:
+#         return wp
 
 
