@@ -1,20 +1,27 @@
-from bs4 import BeautifulSoup
 from settings import settings
 import logging
+from bs4 import BeautifulSoup
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+from db import save_homework
 from util import infomessage
 
-mod_logger=logging.getLogger(__name__)
+mod_logger = logging.getLogger(__name__)
 
-def get(browser, child_name :str):
-
+def get_intra_homework(browser, child_name :str):
+    infomessage(mod_logger,"Getting {}".format(child_name))
     child=settings["children"][child_name]
 
     child_diary_url=settings["intra"]["url"]+settings["intra"]["diary_url"].format(child["id"],child["firstname"],child["diaryid"])
 
-    infomessage(mod_logger,f"Getting homework for {child_name}")
+    browser.get(child_diary_url)
 
     try:
-        content = browser.open(child_diary_url)
+        # Check the page is loading
+        element = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.ID, "sk-diary-notes-container")))
+        content = browser.page_source
         soup = BeautifulSoup(content, 'html.parser')
         notes_container=soup.find(attrs={'id':'sk-diary-notes-container'})
         notes_list=notes_container.findChild("ul")
@@ -39,23 +46,43 @@ def get(browser, child_name :str):
                     cols = [ele.text.strip() for ele in cols]
                     home_work_subject_list_per_day.append(cols)
 
-            home_work_day["home_work"]=home_work_subject_list_per_day/0
+            home_work_day["home_work"]=home_work_subject_list_per_day
             home_work_list.append(home_work_day) 
 
         homework={"name":child_name, "homework":home_work_list}
- 
-
-
-    except IndexError as ie:
-        mod_logger.error(ie)
-        infomessage(mod_logger,f"An error occured ({ie.__cause__}) see log")
-        return None
-
-    except Exception as e:
-        mod_logger.exception(e)
-        infomessage(mod_logger,f"An exception occured ({e.__cause__}) see log")
-        return None
-
-    else:              
-        infomessage(mod_logger,f"Homework for {child_name} retrieved") 
+        
         return homework
+    
+    except IndexError as ie:
+        infomessage(mod_logger,"An error ocurred, see log")
+        mod_logger.error(ie)
+    except TimeoutException as te:
+        infomessage(mod_logger,"A timeout exception ocurred, see log")
+        mod_logger.exception(te)
+    except Exception as e:
+        infomessage(mod_logger,"An exception ocurred, see log")
+        mod_logger.exception(e)
+    
+
+def get_intra_homework_list(browser, children :list):
+    """Returns a list of homework for each child suplied in the 'children' list"""
+    num_c=len(children)
+   # logging.info("Getting {} children".format(num_c))
+    homework=[]
+
+    try:
+        for i,child in enumerate(children):
+            infomessage(mod_logger,"Getting child {} of {}".format(i+1,num_c))      
+            s=get_intra_homework(browser, child)
+            homework.append(s)
+    except Exception as e:
+        infomessage(mod_logger,"An exception ocurred, see log")
+        mod_logger.exception(e)
+    else:
+        infomessage(mod_logger,"Succesfully retrieved data for {} children".format(num_c))
+        return homework
+
+def update(browser):
+    hw=get_intra_homework_list(browser,settings["update"]["children"])
+    save_homework(hw)
+
