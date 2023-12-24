@@ -65,9 +65,7 @@ def init_browser():
             from selenium.webdriver.chrome.service import Service
             
             options = webdriver.ChromeOptions()
-
             options.experimental_options["prefs"] = settings["selenium"]["prefs"]
-          
             options.page_load_strategy = "eager"
 
             infomessage(mod_logger,"Adding args: {}".format(settings["selenium"]["arguments"]["chrome"]))

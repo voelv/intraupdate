@@ -51,7 +51,7 @@ settings={
         "port":8080,
         "driver_path":{
             "chrome":"C:/Users/pravnthers/Personlig/Fam/chromedriver.exe",
-            "firefox":"C:/Users/pravnthers/Personlig/Fam/geckodriver.exe"},
+            "firefox":"C:/Users/pravnthers/Personlig/Intraupdate/intraupdate/geckodriver.exe"},
         "browser_executable_path" : {
             "chrome":"C:/Program Files/Google/Chrome/Application/chrome.exe",
             "firefox":"C:/Program Files/Mozilla Firefox/firefox.exe"
