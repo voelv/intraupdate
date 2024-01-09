@@ -22,10 +22,18 @@ settings={
         }
     },
     "database":{
-    "host": "qantm.net",
-    "user":"qantmnet_fam_production",
-    "password": "Wizard-Nuzzle8-Landed",
-    "database": "qantmnet_fam_PROD",
+        "test":{
+            "host": "qantm.net",
+            "user": "qantmnet_fam_develop",
+            "password": "Broiler-Prancing6-Yippee",
+            "database": "qantmnet_fam_TEST",
+        },
+        "prod":{
+            "host": "qantm.net",
+            "user": "qantmnet_fam_production",
+            "password": "Wizard-Nuzzle8-Landed",
+            "database": "qantmnet_fam_PROD",
+        }
     },
     "update":{
         "children":["Oskar","Storm"]

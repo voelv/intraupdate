@@ -11,7 +11,7 @@ from util import infomessage
 mod_logger = logging.getLogger(__name__)
 
 def get_intra_homework(browser, child_name :str):
-    infomessage(mod_logger,"Getting {}".format(child_name))
+   # infomessage(mod_logger,"Getting {}".format(child_name))
     child=settings["children"][child_name]
 
     child_diary_url=settings["intra"]["url"]+settings["intra"]["diary_url"].format(child["id"],child["firstname"],child["diaryid"])
@@ -72,17 +72,17 @@ def get_intra_homework_list(browser, children :list):
 
     try:
         for i,child in enumerate(children):
-            infomessage(mod_logger,"Getting child {} of {}".format(i+1,num_c))      
+            infomessage(mod_logger,"Getting homework for {} of {}: {}".format(i+1,num_c,child))      
             s=get_intra_homework(browser, child)
             homework.append(s)
     except Exception as e:
         infomessage(mod_logger,"An exception ocurred, see log")
         mod_logger.exception(e)
     else:
-        infomessage(mod_logger,"Succesfully retrieved data for {} children".format(num_c))
+        infomessage(mod_logger,"Succesfully retrieved homework for {}".format(num_c))
         return homework
 
-def update(browser):
+def update(browser, conn):
     hw=get_intra_homework_list(browser,settings["update"]["children"])
-    save_homework(hw)
+    save_homework(hw, conn)
 

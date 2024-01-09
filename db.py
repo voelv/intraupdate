@@ -1,7 +1,7 @@
 import mysql.connector
 from settings import settings
 import logging
-from util import infomessage
+from util import infomessage, validate_db_arg_input
 import json
 import sys
 from setup_config import setup_config
@@ -9,15 +9,12 @@ from setup_config import setup_config
 mod_logger = logging.getLogger(__name__)
 
 # Connection to database
-def get_connection(dictionary=None):
+def get_connection():
+    db_to_use=validate_db_arg_input(sys.argv)
+    infomessage(mod_logger,f"Connecting to:{settings['database'][db_to_use]['database']}")
     try:
-        conn = mysql.connector.connect(**settings["database"])
-
-        if dictionary==True:
-            cursor = conn.cursor(dictionary=True)
-        else:
-            cursor = conn.cursor()
-        return conn, cursor
+        conn = mysql.connector.connect(**settings["database"][db_to_use])
+        return conn
     
     except mysql.connector.Error as e:
         infomessage(mod_logger,"An error ocurred, see log")
@@ -29,9 +26,9 @@ def get_connection(dictionary=None):
         mod_logger.exception(ex)
         sys.exit()
 
-def exec_sql(sql :str,many :list=None, one :tuple=None):
-    db_conn, db_cur = get_connection()
+def exec_sql(sql :str,db_conn :mysql.connector.connection,many :list=None, one :tuple=None):
     try:
+        db_cur=db_conn.cursor()
         if many:
             db_cur.executemany(sql,many) 
         else:
@@ -44,25 +41,24 @@ def exec_sql(sql :str,many :list=None, one :tuple=None):
         mod_logger.exception(ex)
     
     finally:
-        if db_conn.is_connected():
+        if db_cur:
             db_cur.close()
-            db_conn.close()
 
-def delete_table(table_name):
+def delete_table(table_name, db_conn :mysql.connector.connection):
     try:
         query = "DROP TABLE {}".format(table_name)
 
-        exec_sql(query)
+        exec_sql(query, db_conn)
         
         infomessage(mod_logger,"Table {} deleted successfully".format(table_name))
 
     except Exception as ex:
         mod_logger.exception(ex)
 
-def save_homework(homework :list):
+def save_homework(homework :list,db_conn :mysql.connector.connection):
     sql = """INSERT INTO homework (childid,firstname,homework) 
     VALUES (%s,%s,%s)"""
-    
+
     for i,hw in enumerate(homework, start=1):
         #f"Saving homework for {i} of {len(homework)} child{"ren" if len(homework)>1 else ""}"
         infomessage(mod_logger,"Saving homework {}".format(i))
@@ -74,22 +70,22 @@ def save_homework(homework :list):
             mod_logger.exception(ex)
 
         try:
-            exec_sql(sql,None,db_tuple)
+            exec_sql(sql,db_conn,one=db_tuple)
 
         except Exception as ex:
             mod_logger.exception(ex)
             infomessage(mod_logger,"EX: Homework NOT SAVED")
 
-        else:
-            infomessage(mod_logger,"SAVED")
 
-def save_weekplan(weekplans : list):
+def save_weekplan(weekplans : list, db_conn :mysql.connector.connection):
     sql = """INSERT INTO weekplan (childid,firstname,weekplan) 
     VALUES (%s,%s,%s)"""
-    
+
+    number_of_plans=len(weekplans)
+
     for i,wp in enumerate(weekplans, start=1):
         #f"Saving homework for {i} of {len(homework)} child{"ren" if len(homework)>1 else ""}"
-        infomessage(mod_logger,"Saving weekplan {}".format(i))
+        infomessage(mod_logger,"Saving weekplan {} of {}: {}".format(i,number_of_plans,wp["name"]))
 
         try:
             db_tuple=(settings["children"][wp["name"]]["id"], wp["name"],json.dumps(wp))
@@ -98,14 +94,12 @@ def save_weekplan(weekplans : list):
             mod_logger.exception(ex)
 
         try:
-            exec_sql(sql,None,db_tuple)
+            exec_sql(sql,db_conn,one=db_tuple)
 
         except Exception as ex:
             mod_logger.exception(ex)
             infomessage(mod_logger,"EX: weekplan NOT SAVED")
 
-        else:
-            infomessage(mod_logger,"SAVED")
 
 def setup():
     """WARNING : THIS FUNCTION DELETES ALL TABLES if they exist and creates them empty again
@@ -156,6 +150,8 @@ def setup():
     else:
         infomessage(mod_logger,f"Tables created'{table}'")
 
-
+    if db_conn:
+        db_conn.close()
+        db_cur.close()
     infomessage(mod_logger,f"SETUP COMPLETE")
 

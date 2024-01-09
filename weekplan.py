@@ -20,7 +20,7 @@ def week_to_fetch(wk=None):
     return week
 
 def get_weekplan(browser, child_name :str, week_num=None, year=None):
-    mod_logger.info(f"Getting weekplan for {child_name}")
+    #mod_logger.info(f"Getting weekplan for {child_name}")
     child=settings["children"][child_name]
 
     # determine which weeknum to fetch
@@ -88,7 +88,7 @@ def get_intra_weekplan_list(browser, children :list):
 
     try:
         for i,child in enumerate(children):
-            infomessage(mod_logger,"Getting plan {} of {}".format(i+1,num_c))
+            infomessage(mod_logger,"Getting plan {} of {} : {}" .format(i+1,num_c,child))
             s=get_weekplan(browser, child)
             weekplan.append(s)
     except Exception as e:
@@ -98,8 +98,8 @@ def get_intra_weekplan_list(browser, children :list):
         return weekplan
 
 
-def update(browser):
+def update(browser, conn):
     wp=get_intra_weekplan_list(browser,settings["update"]["children"])
-    save_weekplan(wp)
+    save_weekplan(wp, conn)
 
 

@@ -6,6 +6,7 @@ from actions import log_in,log_out
 from homework import update as update_homework
 from weekplan import update as update_weekplans
 from util import infomessage
+from db import get_connection
 
 #Init logging
 logging.basicConfig(level=logging.INFO,filename='intraupdate.log', encoding='utf-8',format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', datefmt="%Y-%m-%d %H:%M:%S")
@@ -93,21 +94,31 @@ def init_browser():
         return browser
     
 if __name__ == "__main__":
+    
     try:
-        browser=init_browser()
-        log_in(browser)
-        update_homework(browser)
-        update_weekplans(browser)
-        log_out(browser)
-
+        db_conn = get_connection()
     except Exception as ex:
-        infomessage(mod_logger,"An exception ocurred, see log")
         logging.exception(ex)
-        sel_logger.exception(ex)
+        infomessage(mod_logger,"An exception occurred connection to the database. See log")
         sys.exit()
-
     else:
-        infomessage(mod_logger,"Intra data retrieved and stored successfully")
+        try:
+            browser=init_browser()
+            log_in(browser)
+            update_homework(browser, db_conn)
+            update_weekplans(browser, db_conn)
+            log_out(browser)
 
-    finally:
-        sys.exit()
+        except Exception as ex:
+            infomessage(mod_logger,"An exception ocurred, see log")
+            logging.exception(ex)
+            sel_logger.exception(ex)
+            sys.exit()
+
+        else:
+            if db_conn:
+                db_conn.close()
+            infomessage(mod_logger,"Intra data retrieved and stored successfully")
+
+        finally:
+            sys.exit()
