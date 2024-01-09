@@ -1,5 +1,6 @@
 # Intraupdate
 ## Gets data from Forældreintra using Selenium
+This will eliminate the problem of javascript not being enabled, or missing data from lazy loaded pages on Foraeldreintra
 
 ### Selenium Customizables
 - Download newest Selenium drivers on the fly or use local copies
