@@ -5,10 +5,10 @@ This will eliminate the problem of javascript not being enabled, or missing data
 ### Selenium Customizables
 - Download newest Selenium drivers on the fly or use local copies
 - Choose Firefox or Chrome
-- Parameters passed to Selenium
+- Pass parameters to Selenium
 
 ### Data from Foraeldreintra
-- Get data from one ore more children
+- Get data from one or more children
 - Ugeplaner
 - Lektiebog
 
@@ -16,13 +16,14 @@ This will eliminate the problem of javascript not being enabled, or missing data
 - Implemented with MySQL
 - Setup script included
 
-### Setup
-- Review and change settings.py
-- Run db.setup()
+### How to Setup
+- Review and change `settings.py`
+- Run `db.setup()`
 
-### Get and save data from Forældreintra
-- update.py
-
+### Get and save data from Forældreintra to MySql database
+- Run `update.py [db]`
+Optional: [db] is either "test" or "prod"
+Not supplying argument will use "test"
   
     
 -- voelv@proton.me
