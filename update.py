@@ -99,7 +99,7 @@ if __name__ == "__main__":
         db_conn = get_connection()
     except Exception as ex:
         logging.exception(ex)
-        infomessage(mod_logger,"An exception occurred connection to the database. See log")
+        infomessage(mod_logger,"An exception occurred connecting to the database. See log")
         sys.exit()
     else:
         try:

@@ -11,7 +11,6 @@ from util import infomessage
 mod_logger = logging.getLogger(__name__)
 
 def get_intra_homework(browser, child_name :str):
-   # infomessage(mod_logger,"Getting {}".format(child_name))
     child=settings["children"][child_name]
 
     child_diary_url=settings["intra"]["url"]+settings["intra"]["diary_url"].format(child["id"],child["firstname"],child["diaryid"])

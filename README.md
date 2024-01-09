@@ -16,7 +16,6 @@
 - Setup script included
 
 ### Setup
-- Review and change setup_config
 - Review and change settings.py
 - Run db.setup()
 
