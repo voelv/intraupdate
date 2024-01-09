@@ -2,7 +2,7 @@
 ## Gets data from Forældreintra using Selenium
 
 ### Selenium Customizables
-- Download newest drivers on the fly or use local copies
+- Download newest Selenium drivers on the fly or use local copies
 - Choose Firefox or Chrome
 - Parameters passed to Selenium
 
