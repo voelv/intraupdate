@@ -1,6 +1,7 @@
 # Intraupdate
 ## Gets data from Forældreintra using Selenium
 This will eliminate the problem of javascript not being enabled, or missing data from lazy loaded pages on Foraeldreintra
+Modules like httpx and requests wil not be able to get the data properly, even wtih async.
 
 ### Selenium Customizables
 - Download newest Selenium drivers on the fly or use local copies
@@ -33,7 +34,13 @@ Change database properties in `settings.py`
 - Send alerts by email or other communication platforms
 
 ### Tip
-Create a .bat file and schedule the bat file to update data on a regular basis
+Create a .bat file and schedule the bat file to update data on a regular basis  
+ex: ```cmd /k "cd /d c:\<path to your project>\.venv\Scripts & call .\activate.bat  & cd /d c:\<path to the update file> & python update.py <db>"```
+
+### Disclaimer
+This is a webscraper.
+If at any point in time Forældre intra changes it's HTML, the code will have to be changed to reflect the new structure.
 
 
+### Enjoy
 -- voelv@proton.me

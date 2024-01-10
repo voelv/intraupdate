@@ -1,4 +1,4 @@
-from settings import settings
+from settings_local import settings
 import datetime
 import string
 import random

@@ -1,5 +1,5 @@
 import mysql.connector
-from settings import settings
+from settings_local import settings
 import logging
 from util import infomessage, validate_db_arg_input
 import json

@@ -1,4 +1,4 @@
-from settings import settings
+from settings_local import settings
 import logging
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.wait import WebDriverWait

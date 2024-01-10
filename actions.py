@@ -1,5 +1,5 @@
 
-from settings import settings
+from settings_local import settings
 import logging
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
