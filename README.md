@@ -21,7 +21,8 @@ Modules like httpx and requests wil not be able to get the data properly, even w
 - Setup script included
 
 ### How to Setup
-- Review and change `settings.py`
+- Review and change `settings_example.py`
+- RENAME `settings_example.py` to `settings.py`  
 - Run `db.setup()`
 
 ### Get and save data from Forældreintra to MySql database
@@ -43,7 +44,6 @@ ex: ```cmd /k "cd /d c:\<path to your project>\.venv\Scripts & call .\activate.b
 ### Disclaimer
 This is a webscraper.
 If at any point in time Forældre intra changes it's HTML, the code will have to be changed to reflect the new structure.
-
 
 ### Enjoy
 -- voelv@proton.me
