@@ -1,0 +1,7 @@
+__pycache__/
+*.log
+*.code-workspace
+.venv
+geckodriver.exe
+*.bat
+settings_local.py
