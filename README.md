@@ -1,6 +1,7 @@
 # Intraupdate
 ## Gets data from Forældreintra using Selenium
-This will eliminate the problem of javascript not being enabled, or missing data from lazy loaded pages on Foraeldreintra
+Scrape and store data from Forældreintra in MySql
+Using Selenium til eliminate the problem of javascript not being enabled, or missing data from lazy loaded pages on Foraeldreintra
 Modules like httpx and requests wil not be able to get the data properly, even wtih async.
 
 ### Selenium Customizables
