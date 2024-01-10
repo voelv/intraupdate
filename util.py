@@ -79,11 +79,12 @@ def is_after_now(str_date):
         return None
 
 def validate_db_arg_input(args):
-    if not args:
+    if len(args)==1:
         return "test"
-    elif args[1] == "test":
-        return "test"
-    elif args[1] == "prod":
-        return "prod"
+    elif len(args) == 2: 
+        if args[1] == "test":
+            return "test"
+        elif args[1] == "prod":
+            return "prod"
     else: 
         return "test"
