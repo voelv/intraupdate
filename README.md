@@ -5,6 +5,8 @@ Modules like httpx and requests wil not be able to get the data properly, even w
 
 ### Selenium Customizables
 - Download newest Selenium drivers on the fly or use local copies
+  - Default is to use local Selenium driver and browser, so you must download these and enter the paths in `settings.py`
+  - Alternatively change the setting `selenium.local` in `settings.py` to `False`
 - Choose Firefox or Chrome
 - Pass parameters to Selenium
 
