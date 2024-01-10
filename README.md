@@ -9,8 +9,8 @@ This will eliminate the problem of javascript not being enabled, or missing data
 
 ### Data from Foraeldreintra
 - Get data from one or more children
-- Ugeplaner
-- Lektiebog
+  - Ugeplan
+  - Lektiebog
 
 ### Saving data
 - Implemented with MySQL
@@ -22,8 +22,18 @@ This will eliminate the problem of javascript not being enabled, or missing data
 
 ### Get and save data from Forældreintra to MySql database
 - Run `update.py [db]`
-Optional: [db] is either "test" or "prod"
-Not supplying argument will use "test"
+
+Optional: [db] is either "test" or "prod".  
+Not supplying argument will use "test".  
+Example: `Python update.py prod`  
+Change database properties in `settings.py`  
   
-    
+### Potential use
+- Build a family dashboard with homework and weekplan data
+- Send alerts by email or other communication platforms
+
+### Tip
+Create a .bat file and schedule the bat file to update data on a regular basis
+
+
 -- voelv@proton.me
