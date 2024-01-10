@@ -4,4 +4,4 @@ __pycache__/
 .venv
 geckodriver.exe
 *.bat
-settings_local.py
+settings.py
