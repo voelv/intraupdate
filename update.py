@@ -22,7 +22,7 @@ logging.getLogger('selenium.webdriver.common').setLevel(logging.INFO)
 mod_logger = logging.getLogger(__name__)
 
 # check if the settings file exists
-settings_filename="settings_local.py"
+settings_filename="settings.py"
 if not os.path.exists(settings_filename):
     print(f"{settings_filename} was not found, update can not continue - exiting")
     print(os.path)
